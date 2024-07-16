@@ -1,0 +1,492 @@
+openapi: '3.0.0'
+
+info:
+  version: "1.0.0"
+  title: Account Reconciliations
+  description: |
+    Account Reconciliation automates and standardizes the reconciliation process to produce high-quality and accurate financial statements. It drives accuracy in the financial close by providing accountants with a streamlined method to verify the correctness and appropriateness of their balance sheets. Accountants can quickly compare general ledger, bank and other data, investigate discrepancies and take required actions from an intuitive, unified workspace.
+servers:
+  - url: 'https://{environment}.api.blackline.com'
+    description: The public BlackLine API server.
+    variables:
+      environment:
+        enum:
+          - us    # US Production server
+          - eu    # EU Production server
+          - sbus  # US Sandbox server
+          - sbeu  # EU Sandbox server          
+        default: us
+        description: 'Blackline Production and Sandbox environments'
+security:
+  - bearerAuth:
+      - DataIngestionAPI
+paths:
+  /dataingestion/accounts:
+    put:
+      summary: Accounts
+      description: Imports Account Balances for Account Reconciliations and Variance Analysis and creates or updates Account Reconciliations for each Period. Provides additional information about each Account such as account type, description, references, and whether there has been activity in the period.
+      tags:
+        - Accounts
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                3000  Account-DI-02    AS020  1102  BK  12111      Test Bank Account  Cash  A  Asset  TRUE  TRUE  GBP  USD  6/30/2014  34664.86  23058.37  34664.86  IMPCash 2  IMPCash 3  IMPCash 4  IMPCash 5  IMPCash 6
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/settings:
+    put:
+      summary: Accounts Settings
+      description: As an administrator, the account setting fields is used to manage creating or assigning accounts.  Refer to the latest version of the data Import template for information about the available values and options for the columns.  Hover over the columns to display notes and restrictions. [Using data import template](https://docs.blackline.com/bundle/blackline/page/system/jobs/using-data-import-template.html)
+      tags:
+        - Accounts
+      operationId: AccountsSettings
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                C0008	1000	FCA-023K	OC001		BK					TRUE	TRUE	High		Monthly	Monthly	Quarterly	Monthly	Monthly				Bank Account	BR	A	ERP B	FALSE	TRUE	FALSE	7	88	and	Equity	USD	USD							TRUE	Preparer General Questions	Approver General Questions				9	1	50	10	FALSE	TRUE	FALSE	TRUE	TRUE	FALSE	TRUE	TRUE	TRUE	TRUE	TRUE		5	15	Auditor	www.google.com	www.google.com	
+              type: string
+              description: Values are tab separated
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/subledgers:
+    put:
+      summary: Subledgers
+      description: Imports data for Sub Ledger Balances in Account Reconciliations using the Sub Ledger template.
+      tags:
+        - Accounts
+      operationId: Subledgers
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                C0050 1102 AT020 AR 12111 08/31/2018 300125.42 200038.83 300125.42
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/bank-balances:
+    put:
+      summary: Bank Balances
+      description: Imports data for Bank Statement Balances in Account Reconciliations using the Bank template.
+      tags:
+        - Accounts
+      operationId: BankBalances
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                C0004  1001    AT020  1102  BK  12111        6/30/2014      41235.2567896789
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/items:
+    put:
+      summary: Items
+      description: Imports Reconciling Item data for Account Reconciliations including Open and Close Dates, Item Class, Amounts and Currency.
+      tags:
+        - Accounts
+      operationId: Items
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                C0060 1102 AT020 AR 12111 C00601102AT020AR433256 08/13/2018 08/13/2018 09/07/2018 General Deposits in Transit T G TRUE Deposits in Transit for International Accounts Receivable DiT API Import Demonstration For ITB18 664.15 956.89 956.89 664.15 GBP
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/multi-currency-balances:
+    put:
+      summary: Multi-currency Balances
+      description: Imports Multi-Currency, summed balances at the transaction level. These balances contain the period-end GL account balance. Also used to import balance details for Sub Ledger and Bank Balances.
+      tags:
+        - Accounts
+      operationId: Multi-currencyBalances
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                C0060 1102 AT020 AR 12111 Europe Balance_subledger 08/31/2018 1996.50 3025.00 3025.00 2601.50 EUR
+                C0060 1102 AT020 AR 12111 Great Britain Balance_subledger 08/31/2018 676.07 1024.35 1024.35 676.07 GBP
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/group-settings:
+    put:
+      summary: Accounts Group Settings
+      description: As an administrator, the group setting fields is used to manage creating or assigning groups.  Refer to the latest version of the data Import template for information about the available values and options for the columns.  Hover over the columns to display notes and restrictions. [Using data import template](https://docs.blackline.com/bundle/blackline/page/system/jobs/using-data-import-template.html)
+      tags:
+        - Accounts - Nov
+      operationId: AccountsGroupSettings
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                CORP	London - PPE									London - Property, Plant, and Equipment	FALSE	TRUE	TRUE		Associated Accounts	GBP	EUR	Monthly	Monthly	Monthly	Monthly	Monthly	Kim.Wilson	Brady.Pamela	Tyler.Stevens	Pat.Black	Kay.Wong	Ken.Wolfe	A	Medium		FALSE	FALSE	FALSE				FALSE				Fixed Assets							Preparer General Questions	Approver General Questions	Reviewer General Questions						0	FALSE	FALSE																	
+              type: string
+              description: Values are tab separated
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/user-account-assignments:
+    put:
+      summary: Account Assignments
+      description: Assign users by role to Account Reconciliations. Applies to Preparers, Approvers, Reviewers, Account Reviewers, Account Managers, and Internal Auditors.
+      tags:
+        - Accounts - Nov
+      operationId: AccountAssignments
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                CORP GRP-1100 Accounts Receivable TRUE TRUE Subledger Match USD GBP Monthly Monthly Quarterly Adam.Wilson Steve.Miller A
+                CC001 GRP-13xx-14xx Fixed Assets TRUE General List USD USD Monthly Monthly Quarterly Adam.Wilson Steve.Miller A
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/group-mappings:
+    put:
+      summary: Accounts Group Mappings
+      description: Adds, updates, or removes Accounts from Account Groups.
+      tags:
+        - Accounts - Nov
+      operationId: AccountsGroupMappings
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: |-
+                C0004 1100 AT020 1102 AR 63993 CORP GRP-1100 12/31/2013 A
+                C0043 1100 SY060 1102 AR 63993 CORP GRP-1100 12/31/2013 A
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+  /dataingestion/accounts/cross-currency-rates:
+    put:
+      summary: Cross Currency Rates
+      description: Imports direct currency conversion without going through intermediate currency Rates feature within BlackLine. Currency Rates must be imported for every Period.
+      tags:
+        - Accounts - Nov
+      operationId: CrossCurrencyRates
+      deprecated: false
+      parameters:
+        - $ref: '#/components/parameters/contenttype'
+        - $ref: '#/components/parameters/message-version'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              example: "ADP     0.00697000  10/31/2019  USD"
+              type: string
+      responses:
+        202:
+          $ref: '#/components/responses/202job'
+        400:
+          $ref: '#/components/responses/400InvalidFormat'
+        401:
+          $ref: '#/components/responses/401Error'
+        403:
+          $ref: '#/components/responses/403Error'
+        404:
+          $ref: '#/components/responses/404Error'
+        405:
+          $ref: '#/components/responses/405Error'
+        422:
+          $ref: '#/components/responses/422Error'
+        429:
+          $ref: '#/components/responses/429Error'
+        500:
+          $ref: '#/components/responses/500Error'
+        503:
+          $ref: '#/components/responses/503Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    contenttype:
+      name: Content-Type
+      description: 'Media type of the resource.'
+      in: header
+      required: false
+      schema:
+        type: string
+        example: 'text/plain'
+    message-version:
+      name: message-version
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+      description: 'The message-version of the import job. It is optional, if no message-version is added it will go to default file.'
+  responses:    
+    202job:
+      description: The import job was accepted, and it has the response import id for future reference.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              import_id:
+                type: string
+          examples:
+            sample1:
+              value:
+                import_id: '2325'
+            sample2:
+              value:
+                import_id: 'baf99f49-0eb2-40e9-bec0-9f9fa2d489d6' 
+    400VersionRequired:
+      description: User has not supplied an import version.
+    400VersionNotSupported:
+      description: The version supplied by the user is not supported.
+    400NoData:
+      description: User has not supplied any data for import.
+    400InvalidFile:
+      description: User has supplied an invalid import profile name.
+    400InvalidFormat:
+      description: Bad request - Request is not well-formed, syntactically incorrect, or violates schema.
+    401Error:
+      description: Unauthorized - Authentication failed due to invalid authentication credentials.
+    403Error:
+      description: Forbidden - Authorization failed due to insufficient permissions.
+    404Error:
+      description: Not found - The specified resource does not exist.
+    405Error:
+      description:  Method Not Allowed - The server does not implement the requested HTTP method.
+    422Error:
+      description: Unprocessable Entity - Unable to process the requested action with the contained instructions.
+    429Error:
+      description: Too Many Request - User has sent too many requests in a given amount of time.
+    500Error:
+      description: Internal Server Error - An unexpected error occurred on the server.
+    503Error:
+      description: Service Unavailable - The web server is currently unavailable.
